@@ -10,18 +10,19 @@ sub power_set {
 #    printf("indexes: %b\n", $ind);
     for (my $i = 0; $i <= $ind; $i++) {
         my $res = $ind & $i;
-        my @res = split(//, sprintf("%b", $res));
-        next if scalar(@res) < scalar(@arr);
-        print "{";
-        for (my $j = 0; $j <= scalar(@arr); $j++) {
-            print $arr[$j] if $res[$j];
+        my $length = scalar(@arr);
+        my @res = split(//, sprintf("%0${length}b", $res));
+        my $delimiter = '';
+        for (my $j = 0; $j < scalar(@arr); $j++) {
+            if ($res[$j]) {
+                print $delimiter.$arr[$j];
+                $delimiter = ',';
+            }
         }
-        print "{0}" unless scalar(@res);
-#        printf(" - %b\n", $res);
-        print "},";
+        print "empty" unless $res;
+        print "\n";
     }
 }
 
 die "I need a set (as a string)" unless $ARGV[0];
 power_set($ARGV[0]);
-print "\n";

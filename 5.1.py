@@ -10,8 +10,9 @@ def parity (x):
 #        print "r: %s, x: %s" % (r, bin(x))
     return r
 
-result = parity(int(sys.argv[1]))
-if result:
-    print "is even"
-else:
-    print "is odd"
+if __name__ == '__main__':
+    result = parity(int(sys.argv[1]))
+    if result:
+        print "%s is even" % (sys.argv[1])
+    else:
+        print "%s is odd" % (sys.argv[1])

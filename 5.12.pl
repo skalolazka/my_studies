@@ -3,22 +3,31 @@
 use strict;
 use warnings;
 
-sub any_order {
-    my ($one, $two) = @_;
-    if ($one->{x} <= $two->{x} && $one->{x} + $one->{w} >= $two->{x}) {
-        if ($one->{y} <= $two->{y} + $two->{h} && $one->{y} + $one->{h} >= $two->{y} + $two->{h}) {
-            return 1
+sub are_intersecting {
+    my %one = %{$_[0]};
+    my %two = %{$_[1]};
+use Data::Dumper;
+    if ($one{x} > $two{x}) {
+        if ($one{x} > $two{x} + $two{w}) {
+            return 0;
         }
     }
-}
-
-sub are_intersecting {
-    my ($one, $two) = @_;
-    my $res = any_order($one, $two);
-    if ($res) { return (1, 1) }
-    $res = any_order($two, $one);
-    if ($res) { return (1, 0) }
-    return (0, 0);
+    else {
+        if ($one{x} + $one{w} < $two{x}) {
+            return 0;
+        }
+    }
+    if ($one{y} > $two{y}) {
+        if ($one{y} > $two{y} + $two{h}) {
+            return 0;
+        }
+    }
+    else {
+        if ($one{y} + $one{h} < $two{y}) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 sub max {
@@ -32,21 +41,22 @@ sub min {
 }
 
 sub intersection {
-    my ($one, $two) = @_;
-    my ($x, $y) = (max($one->{x}, $two->{x}), max($one->{y}, $two->{y}));
-    my $w = min($one->{x} + $one->{w}, $two->{x} + $two->{w}) - $x;
-    my $h = min($one->{x} + $one->{w}, $two->{x} + $two->{w}) - $y;
+    my %one = %{$_[0]};
+    my %two = %{$_[1]};
+    my $x = max($one{x}, $two{x});
+    my $y = max($one{y}, $two{y});
+    my $w = min($one{x} + $one{w}, $two{x} + $two{w}) - $x;
+    my $h = min($one{y} + $one{h}, $two{y} + $two{h}) - $y;
     return "$x $y $w $h";
 }
 
 die "I need two rectangles! 8 numbers: (x, y, width, height) for each rectangle." unless scalar(@ARGV) == 8;
-my ($one, $two);
-($one->{x}, $one->{y}, $one->{w}, $one->{h}, $two->{x}, $two->{y}, $two->{w}, $two->{h}) = @ARGV;
-my ($are, $order) = are_intersecting($one, $two);
+my (%in_one, %in_two);
+($in_one{x}, $in_one{y}, $in_one{w}, $in_one{h}, $in_two{x}, $in_two{y}, $in_two{w}, $in_two{h}) = @ARGV;
+my $are = are_intersecting(\%in_one, \%in_two);
 if ($are) {
     print "Intersecting.\n";
-    my @params = $order ? ($one, $two) : ($two, $one);
-    print "Intersection is: ".intersection(@params);
+    print "Intersection is: ".intersection(\%in_one, \%in_two);
 }
 else {
     print "Not intersecting.";

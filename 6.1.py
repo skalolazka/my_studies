@@ -36,7 +36,6 @@ def rearrange (arr, i):
             big_index += 1
 #        else: # arr[j] > pivot
 #            print '>'
-#            (arr[j], arr[big_index]) = (arr[big_index], arr[j])
 #        print 'end '+str(locals())
     return arr
 

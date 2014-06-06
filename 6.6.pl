@@ -32,7 +32,8 @@ sub increasing {
         $end = scalar(@arr) - 1;
         $max_len = $len;
     }
-    return @arr[$start..$end];
+    #return @arr[$start..$end];
+    return [$start, $end];
 }
 #print join(',', increasing(@ARGV))."\n";
 
@@ -41,10 +42,11 @@ use Test::More;
 use Test::Deep;
 
 my $module = MyIncreasing->new;
-is_deeply([$module->increasing(0)], [0], '(0) - OK');
-is_deeply([$module->increasing(0, 1)], [0, 1], '(0, 1) - OK');
-is_deeply([$module->increasing(0, 1, 2, 0, 1)], [0, 1, 2], '0 OK');
-is_deeply([$module->increasing(0, 1, 0, 1, 2, 0)], [0, 1, 2], '(0, 1, 0, 1, 2, 0) OK');
-is_deeply([$module->increasing(5, 4, 3, 2, 1)], [5], '(5, 4, 3, 2, 1) OK');
+is_deeply($module->increasing(), [0, 0], '() - OK');
+is_deeply($module->increasing(0), [0, 0], '(0) - OK');
+is_deeply($module->increasing(0, 1), [0, 1], '(0, 1) - OK');
+is_deeply($module->increasing(0, 1, 2, 0, 1), [0, 2], '0 OK');
+is_deeply($module->increasing(0, 1, 0, 1, 2, 0), [2, 4], '(0, 1, 0, 1, 2, 0) OK');
+is_deeply($module->increasing(5, 4, 3, 2, 1), [0, 0], '(5, 4, 3, 2, 1) OK');
 
 done_testing;

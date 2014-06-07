@@ -42,7 +42,7 @@ class SimplisticTest(unittest.TestCase):
         first = merge_ll(LinkedList([2]), LinkedList([3]))
         if first == LinkedList([2,3]):
             print 'ok'
-        #self.assertEqual(first, LinkedList([2,3]))
+        self.assertEqual(first, LinkedList([2,3]).first)
 
 #while 1:
 #    print first.value

@@ -32,9 +32,15 @@ sub decode {
     my @str = split(//, $str);
     my ($letter, $count, $decoded) = ('', 0, '');
 
-    for (my $j = 0; $j < scalar(@str); $j += 2) {
-        ($letter, $count) = ($str[$j+1], $str[$j]);
-        $decoded .= $letter x $count;
+    for (my $j = 0; $j < scalar(@str); $j += 1) {
+        if ($str[$j] =~ /\d/) { # count
+            $count .= $str[$j];
+        }
+        else { # letter
+            $letter = $str[$j];
+            $decoded .= $letter x $count;
+            $count = '';
+        }
     }
 
     return $decoded;
@@ -55,5 +61,7 @@ is($module->decode('1a'), 'a', 'decode: 1a OK');
 is($module->decode('2a'), 'aa', 'decode: 2a OK');
 is($module->decode('3a1c2b6d'), 'aaacbbdddddd', 'decode: 3a1c2b6d OK');
 is($module->decode('1a2b1a'), 'abba', 'decode: 1a2b1a OK');
+is($module->decode('11z'), 'zzzzzzzzzzz', 'decode: 2a OK');
+
 
 done_testing;

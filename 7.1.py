@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
-from linkedlist import LinkedList
+from mylinkedlist import MyLinkedList
 
 def merge_ll(l1, l2):
     ptr1, ptr2 = l1.first, l2.first
+    if ptr1.value is None:
+        return ptr2
+    if ptr2.value is None:
+        return ptr1
     prev1, prev2 = l1.first, l2.first
     first = None
     while 1:
@@ -37,19 +41,24 @@ import unittest
 class SimplisticTest(unittest.TestCase):
 
     def test(self):
-#        self.assertTrue(True)
-#        first = merge_ll(LinkedList([2,5,6,7,8]), LinkedList([3,4,9,10,11,12,13]))
-        first = merge_ll(LinkedList([2]), LinkedList([3]))
-        if first == LinkedList([2,3]):
-            print 'ok'
-        self.assertEqual(first, LinkedList([2,3]).first)
-
-#while 1:
-#    print first.value
-#    if first.next_node is None:
-#        break
-#    first = first.next_node
-
+        first = merge_ll(MyLinkedList(), MyLinkedList())
+        self.assertEqual(first, MyLinkedList().first, 'empty')
+        first = merge_ll(MyLinkedList([2]), MyLinkedList())
+        self.assertEqual(first, MyLinkedList([2]).first, 'one empty')
+        first = merge_ll(MyLinkedList(), MyLinkedList([3]))
+        self.assertEqual(first, MyLinkedList([3]).first)
+        first = merge_ll(MyLinkedList([2]), MyLinkedList([3]))
+        self.assertEqual(first, MyLinkedList([2,3]).first)
+        first = merge_ll(MyLinkedList([3]), MyLinkedList([2]))
+        self.assertEqual(first, MyLinkedList([2,3]).first)
+        first = merge_ll(MyLinkedList([2,5]), MyLinkedList([3]))
+        self.assertEqual(first, MyLinkedList([2,3,5]).first)
+        first = merge_ll(MyLinkedList([2,5,5]), MyLinkedList([3,4,4]))
+        self.assertEqual(first, MyLinkedList([2,3,4,4,5,5]).first)
+        first = merge_ll(MyLinkedList([2,5,6,7,8]), MyLinkedList([3,4,9,10,11,12,13]))
+        self.assertEqual(first, MyLinkedList([2,3,4,5,6,7,8,9,10,11,12,13]).first)
+        first = merge_ll(MyLinkedList([2,4,6,8]), MyLinkedList([3,6,7,9]))
+        self.assertEqual(first, MyLinkedList([2,3,4,5,6,7,8,9]).first)
 
 if __name__ == '__main__':
     unittest.main()

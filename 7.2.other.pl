@@ -13,7 +13,7 @@ sub new {
 
 sub ll_cycle{
     my ($self, $ll) = @_;
-    my ($iter, $big_iter, $count) = ($ll->{first}, $ll->{first}, 0);
+    my ($big_iter, $count) = ($ll->{first}, 0);
     while (defined($big_iter->{next_node})) {
         my ($i, $iter) = ($count, $ll->{first});
         while (defined($iter->{next_node}) && $i > 0) {

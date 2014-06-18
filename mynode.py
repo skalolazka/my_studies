@@ -3,7 +3,7 @@
 class MyNode:
     def __init__(self, value=None):
         self.value = value
-	self.next_node = None
+        self.next_node = None
 
 def to_array(first):
     values = []
@@ -13,6 +13,8 @@ def to_array(first):
     return values
 
 def from_array(arr):
+    if len(arr) == 0:
+        return None
     ll = MyNode(arr[0])
     cur = ll
     for a in arr[1:]:

@@ -1,42 +1,40 @@
 #!/usr/bin/env python
 
 from mynode import *
+import unittest
+import logging
+import sys
+import re
+
+if len(sys.argv) > 1:
+    loglevel = sys.argv[1]
+    loglevel = re.split('=', loglevel)[1] # ok, I know it's ugly, but I couldn't make getopt work, so I hated it
+    logging.basicConfig(level=loglevel)
+#logging.warning('whoa')
+logging.info('info!')
 
 def delete_k_from_end(k,ll):
-    if k == 0:
+    if k == 0 or ll is None:
         return None
-    if ll is None:
-        return None
-    ptr1, ptr2, first = ll, ll, ll
+    ptr1, ptr2 = ll, ll
 
     for i in range(k-1):
-        print 'i ', i
         ptr2 = ptr2.next_node
         if ptr2 is None:
             return 0
 
     prev = None
     while ptr2.next_node is not None:
-        print 'go'
         prev = ptr1
         ptr1 = ptr1.next_node
         ptr2 = ptr2.next_node
-        print 'val1 ', ptr1.value, 'val2 ', ptr2.value
     # ptr2 at the end, ptr1 needs to be deleted
 
-#    print 'prev ', prev.value, 'ptr1 ', ptr1.value, 'ptr1.next ', ptr1.next_node
-    print 'prev ', prev, 'ptr1 ', ptr1
     if prev is not None:
         prev.next_node = ptr1.next_node
-        return first
-    elif ptr1.next_node is not None:
-        prev = ptr1.next_node
-        return ptr1.next_node
+        return ll
     else:
-        return None
-
-
-import unittest
+        return ptr1.next_node
 
 class MyTest(unittest.TestCase):
     def test_empty(self):

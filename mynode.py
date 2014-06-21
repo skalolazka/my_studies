@@ -13,12 +13,10 @@ def to_array(first):
     return values
 
 def from_array(arr):
-    if len(arr) == 0:
-        return None
-    ll = MyNode(arr[0])
+    ll = MyNode()
     cur = ll
-    for a in arr[1:]:
+    for a in arr:
         new_node = MyNode(a)
-	cur.next_node = new_node
-	cur = new_node
-    return ll
+        cur.next_node = new_node
+        cur = new_node
+    return ll.next_node

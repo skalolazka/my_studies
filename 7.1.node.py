@@ -1,31 +1,20 @@
 #!/usr/bin/env python
 
 from mynode import *
+import unittest
 
-def merge_ll(l1, l2):
-    ptr1, ptr2 = l1, l2
-    if ptr1 is None:
-        return ptr2
-    if ptr2 is None:
-        return ptr1
-    first = None
-    while True:
+def merge_ll(ptr1, ptr2):
+    if ptr1 is None or ptr2 is None:
+        return ptr2 or ptr1
+    first = ptr1 if ptr1.value < ptr2.value else ptr2
+    while ptr1 is not None:
         if ptr1.value > ptr2.value:
             ptr1, ptr2 = ptr2, ptr1
-        old_next1, old_next2 = ptr1.next_node, ptr2.next_node
-        if ptr1.value <= ptr2.value:
-            if first is None:
-                first = ptr1
-            if old_next1 is None or old_next1.value > ptr2.value:
-                ptr1.next_node = ptr2
-                if old_next1 is None:
-                    break
-            ptr1 = old_next1
+        old_next1 = ptr1.next_node
+        if old_next1 is None or old_next1.value > ptr2.value:
+            ptr1.next_node = ptr2
+        ptr1 = old_next1
     return first
-
-
-
-import unittest
 
 
 class MyTest(unittest.TestCase):

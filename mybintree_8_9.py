@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-from Queue import Queue, Empty # ok, so there was no task to implement a queue in Python!
+# task: print binary tree in level order
+
+from collections import deque # ok, so there was no task to implement a queue in Python!
 
 class MyBinTree:
     def __init__(self, value=None):
@@ -21,19 +23,17 @@ class MyBinTree:
             self.right = MyBinTree(value)
 
     def array_by_levels(self):
-        if self.value is None:
-            return []
         cur = self
-        q = Queue()
+        q = deque()
         res = []
         while cur is not None or not q.empty():
             res.append(cur.value)
             if cur.left is not None:
-                q.put(cur.left)
+                q.append(cur.left)
             if cur.right is not None:
-                q.put(cur.right)
+                q.append(cur.right)
             try:
-                cur = q.get_nowait()
-            except Empty:
+                cur = q.popleft()
+            except IndexError:
                 break
         return res

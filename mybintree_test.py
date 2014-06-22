@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-from mybintree import *
+from mybintree_8_9 import *
 
 class TestMyBinTree(unittest.TestCase):
     def test_init(self):
@@ -33,7 +33,7 @@ class TestMyBinTree(unittest.TestCase):
 
     def test_print_by_levels(self):
         t = MyBinTree()
-        self.assertEqual(t.array_by_levels(), [], 'none')
+        self.assertEqual(t.array_by_levels(), [None], 'none')
         t1 = MyBinTree(4)
         self.assertEqual(t1.array_by_levels(), [4], 'one')
         #      1

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# task: delete k-th element counting from the end of list
+
 from mynode import *
 import unittest
 import logging
@@ -15,13 +17,13 @@ logging.info('info!')
 
 def delete_k_from_end(k,ll):
     if k == 0 or ll is None:
-        return None
+        raise IndexError
     ptr1, ptr2 = ll, ll
 
     for i in range(k-1):
         ptr2 = ptr2.next_node
         if ptr2 is None:
-            return 0
+            raise IndexError
 
     prev = None
     while ptr2.next_node is not None:
@@ -38,12 +40,9 @@ def delete_k_from_end(k,ll):
 
 class MyTest(unittest.TestCase):
     def test_empty(self):
-        res = delete_k_from_end(0, from_array([]))
-        self.assertEqual(res, None, 'empty')
-        res = delete_k_from_end(2, from_array([]))
-        self.assertEqual(res, None, 'empty')
-        res = delete_k_from_end(0, from_array([1,2]))
-        self.assertEqual(res, None, 'empty')
+        self.assertRaises(IndexError, delete_k_from_end, 0, from_array([]))
+        self.assertRaises(IndexError, delete_k_from_end, 2, from_array([]))
+        self.assertRaises(IndexError, delete_k_from_end, 0, from_array([1,2]))
 
     def test_long(self):
         ll = from_array([1,2,3])
@@ -59,6 +58,7 @@ class MyTest(unittest.TestCase):
         ll = from_array([2,3,4])
         ll = delete_k_from_end(3, ll)
         self.assertEqual(to_array(ll), [3,4], 'really deleted')
+        self.assertRaises(IndexError, delete_k_from_end, 5, ll)
 
 
 if __name__ == '__main__':

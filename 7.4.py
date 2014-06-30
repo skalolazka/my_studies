@@ -7,24 +7,22 @@ def ll_are_joined(ll1, ll2):
     ptr1, ptr2 = ll1, ll2
     if ptr1 is None or ptr2 is None:
         return None
-    len1, len2 = 0, 0 # count lengths
-    while ptr1.next_node is not None:
-        len1 += 1
-        ptr1 = ptr1.next_node
-    while ptr2.next_node is not None:
-        len2 += 1
-        ptr2 = ptr2.next_node
-    if ptr1 != ptr2: # not joined
-        return None
-    if len1 > len2:
+    lens = [0, 0] # count lengths
+    i = 0
+    for ptr in (ptr1, ptr2):
+        while ptr is not None:
+            lens[i] += 1
+            ptr = ptr.next_node
+        i += 1
+    if lens[0] > lens[1]:
         ll1, ll2 = ll2, ll1
+        lens[0], lens[1] = lens[1], lens[0]
     # now ll1 is the shorter list
-    count = abs(len2 - len1)
-    while count > 0:
+    while lens[1] > lens[0]:
         ll2 = ll2.next_node
-        count -= 1
+        lens[1] -= 1
     while ll1 is not None:
-        if ll1 == ll2:
+        if ll1 is ll2:
             return ll1
         ll1, ll2 = ll1.next_node, ll2.next_node
     return None

@@ -26,15 +26,15 @@ class MyBinTree:
         cur = self
         q = deque()
         res = []
-        while cur is not None or not q.empty():
+        while cur is not None or q:
             res.append(cur.value)
             if cur.left is not None:
                 q.append(cur.left)
             if cur.right is not None:
                 q.append(cur.right)
-            try:
+            if q:
                 cur = q.popleft()
-            except IndexError:
+            else:
                 break
         return res
 

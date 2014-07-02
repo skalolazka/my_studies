@@ -21,9 +21,9 @@ def delete_k_from_end(k,ll):
     ptr1, ptr2 = ll, ll
 
     for i in range(k):
-        ptr2 = ptr2.next_node
-        if ptr2 is None and i != k-1:
+        if ptr2 is None:
             raise IndexError
+        ptr2 = ptr2.next_node
 
     prev = None
     while ptr2 is not None:

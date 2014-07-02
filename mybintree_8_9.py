@@ -22,21 +22,22 @@ class MyBinTree:
         else:
             self.right = MyBinTree(value)
 
-    def array_by_levels(self):
-        cur = self
-        q = deque()
-        res = []
-        while cur is not None or q:
-            res.append(cur.value)
-            if cur.left is not None:
-                q.append(cur.left)
-            if cur.right is not None:
-                q.append(cur.right)
-            if q:
-                cur = q.popleft()
-            else:
-                break
-        return res
+
+def array_by_levels(tree):
+    if tree is None:
+        return []
+    cur = tree
+    q = deque()
+    res = []
+    q.append(cur)
+    while q:
+        cur = q.popleft()
+        res.append(cur.value)
+        if cur.left is not None:
+            q.append(cur.left)
+        if cur.right is not None:
+            q.append(cur.right)
+    return res
 
 import unittest
 
@@ -69,10 +70,11 @@ class TestMyBinTree(unittest.TestCase):
         self.assertEqual(t.right.right, None, 'no right.right')
 
     def test_print_by_levels(self):
+        self.assertEqual(array_by_levels(None), [], 'none')
         t = MyBinTree()
-        self.assertEqual(t.array_by_levels(), [None], 'none')
+        self.assertEqual(array_by_levels(t), [None], 'empty tree')
         t1 = MyBinTree(4)
-        self.assertEqual(t1.array_by_levels(), [4], 'one')
+        self.assertEqual(array_by_levels(t1), [4], 'one')
         #      1
         #     / \
         #    2   3
@@ -81,22 +83,23 @@ class TestMyBinTree(unittest.TestCase):
         # /    \    \
         #7      8    9
         t1.put_left(7)
-        self.assertEqual(t1.array_by_levels(), [4,7], 'two')
+        print array_by_levels(t1)
+        self.assertEqual(array_by_levels(t1), [4,7], 'two')
         t2 = MyBinTree(5)
         t2.put_right(8)
-        self.assertEqual(t2.array_by_levels(), [5,8], 'two (right)')
+        self.assertEqual(array_by_levels(t2), [5,8], 'two (right)')
         t3 = MyBinTree(2)
         t3.put_left(t1)
         t3.put_right(t2)
         tm = MyBinTree(1)
         tm.put_left(t3)
-        self.assertEqual(tm.array_by_levels(), [1,2,4,5,7,8], 'one left subtree')
+        self.assertEqual(array_by_levels(tm), [1,2,4,5,7,8], 'one left subtree')
         t4 = MyBinTree(6)
         t4.put_right(9)
         t5 = MyBinTree(3)
         t5.put_right(t4)
         tm.put_right(t5)
-        self.assertEqual(tm.array_by_levels(), [1,2,3,4,5,6,7,8,9], 'printed long')
+        self.assertEqual(array_by_levels(tm), [1,2,3,4,5,6,7,8,9], 'printed long')
 
 
 if __name__ == '__main__':

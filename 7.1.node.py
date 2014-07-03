@@ -5,20 +5,6 @@
 from mynode import *
 import unittest
 
-def merge_ll_old(ptr1, ptr2):
-    if ptr1 is None or ptr2 is None:
-        return ptr2 or ptr1
-    first = ptr1 if ptr1.value < ptr2.value else ptr2
-    while ptr1 is not None and ptr2 is not None:
-        if ptr1.value > ptr2.value:
-            ptr1, ptr2 = ptr2, ptr1
-        old_next1 = ptr1.next_node
-        print 'ptr1.v ', ptr1.value, ' ptr2.v ', ptr2.value
-        #if old_next1 is None or old_next1.value > ptr2.value:
-        ptr1.next_node = ptr2
-        ptr1 = old_next1
-    return first
-
 def merge_ll(ptr1, ptr2):
     if ptr1 is None or ptr2 is None:
         return ptr2 or ptr1

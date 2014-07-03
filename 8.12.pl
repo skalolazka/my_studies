@@ -46,8 +46,6 @@ my $m = MyQueueFromStacks->new;
 
 use Test::More;
 
-use Data::Dumper;
-print Dumper($m);
 is($m->dequeue, undef, 'nothing to dequeue');
 is($m->enqueue(2), 2, 'enqueued');
 $m->enqueue(3);
@@ -58,5 +56,12 @@ is($m->dequeue, 3, 'two');
 is($m->dequeue, 4, 'three');
 is($m->dequeue, 5, 'four');
 is($m->dequeue, undef, 'none left');
+$m->enqueue(3);
+is($m->dequeue, 3, 'again');
+$m = MyQueueFromStacks->new(1,2,3);
+is($m->dequeue, 1, 'from full');
+is($m->dequeue, 2, 'from full again');
+$m->enqueue(4);
+is($m->dequeue, 3, 'from full again and again');
 
 done_testing();

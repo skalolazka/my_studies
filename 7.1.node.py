@@ -29,9 +29,12 @@ def recursive_merge_ll(ptr1, ptr2):
     ptr1.next_node = recursive_merge_ll(ptr1.next_node, ptr2)
     return ptr1
 
-class MyTest(unittest.TestCase):
-    def test_empty(self):
-        for func in (merge_ll, recursive_merge_ll):
+class MyBaseTest(unittest.TestCase):
+    def __init__(self, func):
+        pass
+
+    def test_empty(self, func):
+        if 1:#for func in (merge_ll, recursive_merge_ll):
             first = func(from_array([]), from_array([]))
             self.assertEqual(first, None, 'empty')
 
@@ -52,16 +55,16 @@ class MyTest(unittest.TestCase):
             first = func(None, from_array([0]))
             self.assertEqual(to_array(first), [0], 'first empty, val = 0')
 
-    def test_one(self):
-        for func in (merge_ll, recursive_merge_ll):
+    def test_one(self, func):
+        if 1: #for func in (merge_ll, recursive_merge_ll):
             first = func(from_array([2]), from_array([3]))
             self.assertEqual(to_array(first), [2,3], 'one elem in each')
 
             first = func(from_array([3]), from_array([2]))
             self.assertEqual(to_array(first), [2,3], 'first one bigger')
 
-    def test_many(self):
-        for func in (merge_ll, recursive_merge_ll):
+    def test_many(self, func):
+        if 1: #for func in (merge_ll, recursive_merge_ll):
             first = func(from_array([2,5]), from_array([3]))
             self.assertEqual(to_array(first), [2,3,5], 'two and one in the middle')
 
@@ -74,12 +77,20 @@ class MyTest(unittest.TestCase):
             first = func(from_array([2,4,6,8]), from_array([3,5,7,9]))
             self.assertEqual(to_array(first), [2,3,4,5,6,7,8,9], 'zig-zag=)')
 
-    def test_one_long(self):
-        for func in (merge_ll, recursive_merge_ll):
+    def test_one_long(self, func):
+        if 1: #for func in (merge_ll, recursive_merge_ll):
             first = func(from_array([1,2,3]), from_array([4]))
             self.assertEqual(to_array(first), [1,2,3,4], 'one long')
 
 
+class MergeLLTest(MyBaseTest):
+    def __init__(self, method):
+        MyBaseTest.__init__(self, '__init__')
+        method = getattr(MyBaseTest, method)
+        method(self, merge_ll)
+
+
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(MyTest)
+    suite = unittest.TestLoader().loadTestsFromTestCase(MergeLLTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
+    #unittest.main()

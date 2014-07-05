@@ -14,21 +14,17 @@ sub new {
 
 sub reverse {
     my ($self, $arr, $start, $end) = @_;
-    $start = 0 unless defined($start);
-    $end = scalar(@$arr) - 1 unless defined($end);
-    return if (!scalar(@$arr) || $start > $end || $end > scalar(@$arr));
-    for (my $j = $start; $j <= $start + int(($end - $start) / 2); $j++) {
-        my $rj = $end - $j + $start;
+    return if (!scalar(@$arr) || $start >= $end || $end > scalar(@$arr));
+    for (my $j = $start, my $rj = $end-1; $j < $rj; $j++, $rj--) {
         ($arr->[$j], $arr->[$rj]) = ($arr->[$rj], $arr->[$j]);
     }
 }
 
 sub rotate {
     my ($self, $arr, $i) = @_;
-    $i--;
     $self->reverse($arr, 0, $i);
-    $self->reverse($arr, $i+1);
-    $self->reverse($arr);
+    $self->reverse($arr, $i, scalar(@$arr));
+    $self->reverse($arr, 0, scalar(@$arr));
 }
 
 
@@ -37,6 +33,26 @@ use Test::More;
 use Test::Deep;
 
 my $module = MyRotate->new;
+
+my $test = [];
+$module->reverse($test, 0, scalar(@$test));
+is_deeply($test, [], 'zero reverse OK');
+$test = [1];
+$module->reverse($test, 0, scalar(@$test));
+is_deeply($test, [1], '1 elem reverse OK');
+$test = [1,2,3,4,5];
+$module->reverse($test, 0, scalar(@$test));
+is_deeply($test, [5,4,3,2,1], 'full reverse OK');
+$module->reverse($test, 0, 0);
+is_deeply($test, [5,4,3,2,1], 'no reverse');
+$module->reverse($test, 0, 1);
+is_deeply($test, [5,4,3,2,1], 'no reverse');
+$module->reverse($test, 0, 2);
+is_deeply($test, [4,5,3,2,1], '2 first elem reverse');
+$test = [1,2,3,4,5,6,7,8];
+$module->reverse($test, 2, 5);
+is_deeply($test, [1,2,5,4,3,6,7,8], 'reverse middle part');
+
 my @test_data = (
     { in => [0], i => 0, out => [0] },
     { in => [0], i => 10, out => [0] },

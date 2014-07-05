@@ -15,11 +15,9 @@ def ll_are_joined(ll1, ll2):
     while len2 > len1:
         ll2 = ll2.next_node
         len2 -= 1
-    while ll1 is not None:
-        if ll1 is ll2:
-            return ll1
+    while ll1 is not ll2:
         ll1, ll2 = ll1.next_node, ll2.next_node
-    return None
+    return ll1
 
 def length(ll):
     length = 0

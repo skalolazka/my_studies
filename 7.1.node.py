@@ -29,68 +29,71 @@ def recursive_merge_ll(ptr1, ptr2):
     ptr1.next_node = recursive_merge_ll(ptr1.next_node, ptr2)
     return ptr1
 
+
 class MyBaseTest(unittest.TestCase):
-    def __init__(self, func):
-        pass
+    def test_empty(self):
+        func = self.get_func()
 
-    def test_empty(self, func):
-        if 1:#for func in (merge_ll, recursive_merge_ll):
-            first = func(from_array([]), from_array([]))
-            self.assertEqual(first, None, 'empty')
+        first = func(from_array([]), from_array([]))
+        self.assertEqual(first, None, 'empty')
 
-            first = func(from_array([None]), from_array([None]))
-            self.assertIsInstance(first, MyNode, 'class')
-            self.assertEqual(first.value, None, 'no value')
-            self.assertEqual(first.value, None, 'no next')
+        first = func(from_array([None]), from_array([None]))
+        self.assertIsInstance(first, MyNode, 'class')
+        self.assertEqual(first.value, None, 'no value')
+        self.assertEqual(first.value, None, 'no next')
 
-            first = func(from_array([0]), from_array([]))
-            self.assertEqual(to_array(first), [0], 'one empty, val 0')
+        first = func(from_array([0]), from_array([]))
+        self.assertEqual(to_array(first), [0], 'one empty, val 0')
 
-            first = func(from_array([2]), from_array([]))
-            self.assertEqual(to_array(first), [2], 'one empty, val 2')
+        first = func(from_array([2]), from_array([]))
+        self.assertEqual(to_array(first), [2], 'one empty, val 2')
 
-            first = func(None, from_array([3]))
-            self.assertEqual(to_array(first), [3], 'first empty')
+        first = func(None, from_array([3]))
+        self.assertEqual(to_array(first), [3], 'first empty')
 
-            first = func(None, from_array([0]))
-            self.assertEqual(to_array(first), [0], 'first empty, val = 0')
+        first = func(None, from_array([0]))
+        self.assertEqual(to_array(first), [0], 'first empty, val = 0')
 
-    def test_one(self, func):
-        if 1: #for func in (merge_ll, recursive_merge_ll):
-            first = func(from_array([2]), from_array([3]))
-            self.assertEqual(to_array(first), [2,3], 'one elem in each')
+    def test_one(self):
+        func = self.get_func()
+        first = func(from_array([2]), from_array([3]))
+        self.assertEqual(to_array(first), [2,3], 'one elem in each')
 
-            first = func(from_array([3]), from_array([2]))
-            self.assertEqual(to_array(first), [2,3], 'first one bigger')
+        first = func(from_array([3]), from_array([2]))
+        self.assertEqual(to_array(first), [2,3], 'first one bigger')
 
-    def test_many(self, func):
-        if 1: #for func in (merge_ll, recursive_merge_ll):
-            first = func(from_array([2,5]), from_array([3]))
-            self.assertEqual(to_array(first), [2,3,5], 'two and one in the middle')
+    def test_many(self):
+        func = self.get_func()
+        first = func(from_array([2,5]), from_array([3]))
+        self.assertEqual(to_array(first), [2,3,5], 'two and one in the middle')
 
-            first = func(from_array([2,5,5]), from_array([3,4,4]))
-            self.assertEqual(to_array(first), [2,3,4,4,5,5], 'same values')
+        first = func(from_array([2,5,5]), from_array([3,4,4]))
+        self.assertEqual(to_array(first), [2,3,4,4,5,5], 'same values')
 
-            first = func(from_array([2,5,6,7,8]), from_array([3,4,9,10,11,12,13]))
-            self.assertEqual(to_array(first), [2,3,4,5,6,7,8,9,10,11,12,13], 'long=)')
+        first = func(from_array([2,5,6,7,8]), from_array([3,4,9,10,11,12,13]))
+        self.assertEqual(to_array(first), [2,3,4,5,6,7,8,9,10,11,12,13], 'long=)')
 
-            first = func(from_array([2,4,6,8]), from_array([3,5,7,9]))
-            self.assertEqual(to_array(first), [2,3,4,5,6,7,8,9], 'zig-zag=)')
+        first = func(from_array([2,4,6,8]), from_array([3,5,7,9]))
+        self.assertEqual(to_array(first), [2,3,4,5,6,7,8,9], 'zig-zag=)')
 
-    def test_one_long(self, func):
-        if 1: #for func in (merge_ll, recursive_merge_ll):
-            first = func(from_array([1,2,3]), from_array([4]))
-            self.assertEqual(to_array(first), [1,2,3,4], 'one long')
+    def test_one_long(self):
+        func = self.get_func()
+        first = func(from_array([1,2,3]), from_array([4]))
+        self.assertEqual(to_array(first), [1,2,3,4], 'one long')
 
 
 class MergeLLTest(MyBaseTest):
-    def __init__(self, method):
-        MyBaseTest.__init__(self, '__init__')
-        method = getattr(MyBaseTest, method)
-        method(self, merge_ll)
+    def get_func(self):
+        return merge_ll
+
+
+class RecursiveMergeLLTest(MyBaseTest):
+    def get_func(self):
+        return recursive_merge_ll
 
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(MergeLLTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
-    #unittest.main()
+    suite = unittest.TestLoader().loadTestsFromTestCase(RecursiveMergeLLTest)
+    unittest.TextTestRunner(verbosity=2).run(suite)

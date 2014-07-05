@@ -20,14 +20,8 @@ sub new {
 
 sub enqueue {
     my ($self, $val) = @_;
-    if (!scalar(@{$self->{stack1}}) && !scalar(@{$self->{stack2}})) {
+    if ((!scalar(@{$self->{stack1}}) && !scalar(@{$self->{stack2}})) || (!scalar(@{$self->{stack2}}) && ($self->{what} eq 's'))) {
         push(@{$self->{stack1}}, $val);
-    }
-    elsif (!scalar(@{$self->{stack2}}) && ($self->{what} eq 's')) {
-        push(@{$self->{stack1}}, $val);
-    }
-    elsif (!scalar(@{$self->{stack2}}) && ($self->{what} eq 'q')) {
-        push(@{$self->{stack2}}, $val);
     }
     else {
         push(@{$self->{stack2}}, $val);

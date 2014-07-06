@@ -4,56 +4,36 @@ from mynode import *
 
 class MyStack:
     def __init__(self, values=None):
-        self.for_max = None
         if values is None or len(values) == 0:
+            self.for_max = []
             self.values = []
             self.pointer = None
         else:
+            self.for_max = [None for v in xrange(0, len(values))] # initialized so as not to append all the time
             self.values = values
-            self.pointer = len(values) - 1
-            for value in values:
+            self.pointer = 0 #len(values) - 1
+            self.for_max[0] = self.values[0]
+            for value in values[1:]:
                 self.insert_for_max(value)
+                self.pointer += 1
 
     def push(self, value):
         if self.pointer is None:
             self.pointer = -1
         if self.pointer == len(self.values) - 1:
             self.values.append(value)
+            self.insert_for_max(value, 'append')
         else:
             self.values[self.pointer+1] = value
+            self.insert_for_max(value)
         self.pointer += 1
-        self.insert_for_max(value)
 
-    def insert_for_max(self, value):
-        print 'received v ', value
-        if self.for_max is None:
-            self.for_max = MyNode(value)
-            return
-        if self.for_max.value > value:
-            first = MyNode(value)
-            first.next_node = self.for_max
-            print 'in start ', to_array(self.for_max)
-            return
-        print 'before: ', to_array(self.for_max)
-        ptr = self.for_max
-        prev = MyNode()
-        first = prev
-        inserted = 0
-        while ptr is not None:
-            if prev.value <= value and ptr.value >= value:
-                inserted = 1
-                print 'OOOOOOOKKKKKKKK'
-                prev.next_node = MyNode(value)
-                prev.next_node.next_node = ptr
-                break
-            prev = ptr
-            ptr = ptr.next_node
-        if not inserted:
-            print 'not inserted ', prev.value
-            prev.next_node = MyNode(value)
-            print 'prev now ', to_array(prev)
-        self.for_max = first.next_node
-        print 'inserted ', value, ' now ', to_array(self.for_max)
+    def insert_for_max(self, value, do='write'):
+        result = max(self.for_max[self.pointer], value) if self.pointer != -1 else value
+        if do == 'write':
+            self.for_max[self.pointer + 1] = result
+        else: # 'append'
+            self.for_max.append(result)
 
     def pop(self):
         if self.pointer is None:
@@ -68,21 +48,8 @@ class MyStack:
     def max(self):
         if self.pointer is None:
             return None
-        m = None
-        backup = MyStack()
-        while self.pointer is not None:
-            val = self.pop()
-            if val > m:
-                m = val
-            backup.push(val)
-        b = backup.pop()
-        while b is not None:
-            self.push(b)
-            b = backup.pop()
-        return m
-
-    def fast_max(self):
-        pass
+        else:
+            return self.for_max[self.pointer]
 
     def to_array(self):
         if self.pointer is None:
@@ -98,7 +65,6 @@ class MyStack:
 import unittest
 
 class MyStackTest(unittest.TestCase):
-    @unittest.skip('later')
     def test_is_empty(self):
         s = MyStack()
         self.assertEqual(s.is_empty(), True, 'empty')
@@ -107,7 +73,6 @@ class MyStackTest(unittest.TestCase):
         s.pop()
         self.assertEqual(s.is_empty(), True, 'empty now')
 
-    @unittest.skip('later')
     def test_empty(self):
         s = MyStack()
         self.assertIsInstance(s, MyStack, 'instance')
@@ -122,7 +87,6 @@ class MyStackTest(unittest.TestCase):
         self.assertEqual(s.pop(), None, 'pop again')
         self.assertEqual(s.pop(), None, 'pop again and again')
 
-    @unittest.skip('later')
     def test_full(self):
         s = MyStack([1,2,3,4])
         self.assertEqual(s.pop(), 4, 'initialized')
@@ -131,7 +95,6 @@ class MyStackTest(unittest.TestCase):
         self.assertEqual(s.pop(), 1, "and even more poppin'")
         self.assertEqual(s.pop(), None, "none left")
 
-    @unittest.skip('later')
     def test_to_array(self):
         s = MyStack([])
         self.assertEqual(s.to_array(), [], 'to_array empty')
@@ -142,19 +105,27 @@ class MyStackTest(unittest.TestCase):
         s.push(5)
         self.assertEqual(s.to_array(), [1,2,3,5], 'to_array after pop')
 
-    @unittest.skip('later')
     def test_max(self):
         s = MyStack([1,2,5,4,0])
         self.assertEqual(s.max(), 5, 'max for long')
         self.assertEqual(s.to_array(), [1,2,5,4,0], 's not changed')
+        s = MyStack([1,2,5,4])
+        self.assertEqual(s.max(), 5, 'max for long again')
+        s.pop()
+        self.assertEqual(s.max(), 5, 'max still same after pop of non-max')
+        s.pop()
+        self.assertEqual(s.max(), 2, 'max changed after pop')
+        s.push(6)
+        self.assertEqual(s.max(), 6, 'max changed after push')
         s = MyStack([])
         self.assertEqual(s.max(), None, 'max for empty')
+        s.push(2)
+        self.assertEqual(s.max(), 2, 'max initialized')
+        s.pop()
+        self.assertEqual(s.max(), None, 'max for empty now')
         s = MyStack([5,4,1,2])
         self.assertEqual(s.max(), 5, 'max in the bottom')
         self.assertEqual(s.to_array(), [5,4,1,2], 's not changed now too')
-
-    def test_fast_max(self):
-        s = MyStack([1,2,5,4,6,0])
 
 
 if __name__ == '__main__':

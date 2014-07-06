@@ -20,19 +20,60 @@ sub reverse {
     }
 }
 
-sub rotate {
+sub rotate1 {
     my ($self, $arr, $i) = @_;
     $self->reverse($arr, 0, $i);
     $self->reverse($arr, $i, scalar(@$arr));
     $self->reverse($arr, 0, scalar(@$arr));
 }
 
+sub rotate {
+    my ($self, $arr, $i, $start, $end) = @_;
+    ($start, $end) = (0, scalar(@$arr)) unless (defined($start));
+    return if (!scalar(@$arr) || $start >= $end - 1 || !$i || $i >= $end - $start);
+    # actually I assume $i is < length(@$arr) at the start
+    if ($i <= int(($end - $start) / 2)) {
+        $self->swap($arr, $start, $end, $i);
+        $self->rotate($arr, $i, $start, $end - $i);
+    }
+    else {
+        my $new_i = $end - $start - $i;
+        $self->swap($arr, $start, $end, $new_i);
+        $self->rotate($arr, $end - $start - 2 * $new_i, $start + $new_i, $end);
+    }
+}
+
+sub swap {
+    my ($self, $arr, $start, $end, $len) = @_;
+    for (my $i = $start, my $j = $end - $len; $i < $start + $len; $i++, $j++) {
+        ($arr->[$i], $arr->[$j]) = ($arr->[$j], $arr->[$i]);
+    }
+}
 
 package TestMyRotate;
 use Test::More;
 use Test::Deep;
 
 my $module = MyRotate->new;
+
+my $swap = [];
+$module->swap($swap, 0, 0, 0);
+is_deeply($swap, [], 'swap empty');
+$swap = [0,1,2,3,4,5,6,7,8];
+$module->swap($swap, 0, 0, 0);
+is_deeply($swap, [0,1,2,3,4,5,6,7,8], 'swap none');
+$module->swap($swap, 0, 9, 0);
+is_deeply($swap, [0,1,2,3,4,5,6,7,8], 'swap none again');
+$module->swap($swap, 0, 9, 1);
+is_deeply($swap, [8,1,2,3,4,5,6,7,0], 'swap one');
+$module->swap($swap, 0, 2, 1);
+is_deeply($swap, [1,8,2,3,4,5,6,7,0], 'swap one in start');
+$module->swap($swap, 3, 5, 1);
+is_deeply($swap, [1,8,2,4,3,5,6,7,0], 'swap one in middle');
+$module->swap($swap, 0, 7, 3);
+is_deeply($swap, [3,5,6,4,1,8,2,7,0], 'swap three in start');
+$module->swap($swap, 3, 9, 3);
+is_deeply($swap, [3,5,6,2,7,0,4,1,8], 'swap three in middle');
 
 my $test = [];
 $module->reverse($test, 0, scalar(@$test));
@@ -55,7 +96,7 @@ is_deeply($test, [1,2,5,4,3,6,7,8], 'reverse middle part');
 
 my @test_data = (
     { in => [0], i => 0, out => [0] },
-    { in => [0], i => 10, out => [0] },
+    { in => [0], i => 10, out => [0] }, # I actually assume i can't be > scalar(@$array)
     { in => [1, 0], i => 1, out => [0, 1]},
     { in => [0, 1, 2, 3], i => 1, out => [1, 2, 3, 0]},
     { in => [0, 1, 2, 3], i => 2, out => [2, 3, 0, 1]}, 
@@ -65,8 +106,9 @@ my @test_data = (
     { in => [0, 1, 2, 3, 4, 5], i => 2, out => [2, 3, 4, 5, 0, 1]},
 );
 for my $data (@test_data) {
+    my $str = join(',', @{$data->{in}});
     $module->rotate($data->{in}, $data->{i});
-    is_deeply($data->{in}, $data->{out}, join(',', @{$data->{in}}).' OK');
+    is_deeply($data->{in}, $data->{out}, "$str by $data->{i} OK");
 }
 
 done_testing;

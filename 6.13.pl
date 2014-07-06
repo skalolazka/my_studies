@@ -20,7 +20,7 @@ sub reverse {
     }
 }
 
-sub rotate1 {
+sub rotate1 { # previous version, was tested before
     my ($self, $arr, $i) = @_;
     $self->reverse($arr, 0, $i);
     $self->reverse($arr, $i, scalar(@$arr));

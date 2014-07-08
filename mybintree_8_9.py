@@ -14,13 +14,13 @@ class MyBinTree:
         if isinstance(value, MyBinTree): # let's leave it this simple for now
             self.left = value
         else:
-            self.left = MyBinTree(value)
+            self.left = self.__class__(value) # for inheritance
 
     def put_right(self, value):
         if isinstance(value, MyBinTree): # let's leave it this simple for now
             self.right = value
         else:
-            self.right = MyBinTree(value)
+            self.right = self.__class__(value) # for inheritance
 
 
 def array_by_levels(tree):

@@ -3,10 +3,6 @@
 from mybintree_8_9 import *
 
 def is_balanced(t):
-    if t is None:
-        return True # empty tree is balanced, right?
-    if not isinstance(t, MyBinTree):
-        raise TypeError
     return height(t)[0]
 
 def height(t):
@@ -25,7 +21,7 @@ import unittest
 
 class MyIsBalancedTest(unittest.TestCase):
     def test_wrong_type(self):
-        self.assertRaises(TypeError, is_balanced, 1)
+        self.assertRaises(AttributeError, is_balanced, 1)
 
     def test_empty(self):
         self.assertEqual(is_balanced(MyBinTree()), True, 'empty tree is balanced, right?')

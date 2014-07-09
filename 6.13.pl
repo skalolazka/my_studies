@@ -30,8 +30,15 @@ sub rotate1 { # previous version, was tested before
 sub rotate {
     my ($self, $arr, $i, $start, $end) = @_;
     ($start, $end) = (0, scalar(@$arr)) unless (defined($start));
+    if ($i < 0) {
+        $i = abs($i);
+        $i = $i % scalar(@$arr) if $i > scalar(@$arr);
+        $i = scalar(@$arr) - $i;
+    }
+    elsif ($i > scalar(@$arr)) {
+        $i = $i % scalar(@$arr);
+    }
     return if (!scalar(@$arr) || $start >= $end - 1 || !$i || $i >= $end - $start);
-    # actually I assume $i is < length(@$arr) at the start
     if ($i <= int(($end - $start) / 2)) {
         $self->swap($arr, $start, $end, $i);
         $self->rotate($arr, $i, $start, $end - $i);
@@ -100,6 +107,9 @@ my @test_data = (
     { in => [1, 0], i => 1, out => [0, 1]},
     { in => [0, 1, 2, 3], i => 1, out => [1, 2, 3, 0]},
     { in => [0, 1, 2, 3], i => 2, out => [2, 3, 0, 1]}, 
+    { in => [0, 1, 2, 3], i => -1, out => [3, 0, 1, 2]}, 
+    { in => [0, 1, 2, 3], i => 9, out => [1, 2, 3, 0]}, 
+    { in => [0, 1, 2, 3], i => -9, out => [3, 0, 1, 2]}, 
     { in => [0, 1, 2, 3, 4], i => 2, out => [2, 3, 4, 0, 1]}, 
     { in => [0, 1, 2, 3, 4], i => 4, out => [4, 0, 1, 2, 3]},
     { in => [0, 1, 2, 3, 4], i => 5, out => [0, 1, 2, 3, 4]},

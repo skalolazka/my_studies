@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
+# task: stack with max
+
 from mynode import *
+from collections import deque
 
 class MyStack:
     def __init__(self, values=None):
@@ -11,11 +14,10 @@ class MyStack:
         else:
             self.for_max = [None for v in xrange(0, len(values))] # initialized so as not to append all the time
             self.values = values
-            self.pointer = 0 #len(values) - 1
-            self.for_max[0] = self.values[0]
-            for value in values[1:]:
+            self.for_max = deque()
+            self.pointer = len(values) - 1 # 0
+            for value in values:
                 self.insert_for_max(value)
-                self.pointer += 1
 
     def push(self, value):
         if self.pointer is None:
@@ -29,11 +31,8 @@ class MyStack:
         self.pointer += 1
 
     def insert_for_max(self, value, do='write'):
-        result = max(self.for_max[self.pointer], value) if self.pointer != -1 else value
-        if do == 'write':
-            self.for_max[self.pointer + 1] = result
-        else: # 'append'
-            self.for_max.append(result)
+        result = max(self.for_max[len(self.for_max)-1], value) if self.for_max else value
+        self.for_max.append(result)
 
     def pop(self):
         if self.pointer is None:
@@ -43,13 +42,11 @@ class MyStack:
             self.pointer = None
         else:
             self.pointer -= 1
+        self.for_max.pop()
         return value
 
     def max(self):
-        if self.pointer is None:
-            return None
-        else:
-            return self.for_max[self.pointer]
+        return self.for_max[len(self.for_max)-1] if self.for_max else None
 
     def to_array(self):
         if self.pointer is None:

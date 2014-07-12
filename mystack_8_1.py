@@ -12,27 +12,21 @@ class MyStack:
             self.values = []
             self.pointer = None
         else:
-            self.for_max = [None for v in xrange(0, len(values))] # initialized so as not to append all the time
-            self.values = values
+            self.values = [None for v in xrange(0, len(values))]#values
             self.for_max = deque()
-            self.pointer = len(values) - 1 # 0
+            self.pointer = None
             for value in values:
-                self.insert_for_max(value)
+                self.push(value)
 
     def push(self, value):
         if self.pointer is None:
             self.pointer = -1
         if self.pointer == len(self.values) - 1:
             self.values.append(value)
-            self.insert_for_max(value, 'append')
         else:
             self.values[self.pointer+1] = value
-            self.insert_for_max(value)
+        self.for_max.append(max(self.max(), value))
         self.pointer += 1
-
-    def insert_for_max(self, value, do='write'):
-        result = max(self.for_max[len(self.for_max)-1], value) if self.for_max else value
-        self.for_max.append(result)
 
     def pop(self):
         if self.pointer is None:
@@ -46,7 +40,10 @@ class MyStack:
         return value
 
     def max(self):
-        return self.for_max[len(self.for_max)-1] if self.for_max else None
+        if self.for_max:
+            return self.for_max[-1]
+        else:
+            return None
 
     def to_array(self):
         if self.pointer is None:

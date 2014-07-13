@@ -30,23 +30,19 @@ sub rotate1 { # previous version, was tested before
 sub rotate {
     my ($self, $arr, $i, $start, $end) = @_;
     ($start, $end) = (0, scalar(@$arr)) unless (defined($start));
-    if ($i < 0) {
-        $i = abs($i);
-        $i = $i % scalar(@$arr) if $i > scalar(@$arr);
-        $i = scalar(@$arr) - $i;
-    }
-    elsif ($i > scalar(@$arr)) {
-        $i = $i % scalar(@$arr);
-    }
-    return if (!scalar(@$arr) || $start >= $end - 1 || !$i || $i >= $end - $start);
-    if ($i <= int(($end - $start) / 2)) {
-        $self->swap($arr, $start, $end, $i);
-        $self->rotate($arr, $i, $start, $end - $i);
-    }
-    else {
-        my $new_i = $end - $start - $i;
-        $self->swap($arr, $start, $end, $new_i);
-        $self->rotate($arr, $end - $start - 2 * $new_i, $start + $new_i, $end);
+    $i %= scalar(@$arr);
+    return if (!scalar(@$arr) || !$i);
+    while ($start < $end && $i < $end - $start) {
+        if ($i <= int(($end - $start) / 2)) {
+            $self->swap($arr, $start, $end, $i);
+            $end -= $i;
+        }
+        else {
+            my $new_i = $end - $start - $i;
+            $self->swap($arr, $start, $end, $new_i);
+            $i = $end - $start - 2 * $new_i;
+            $start = $start + $new_i;
+        }
     }
 }
 

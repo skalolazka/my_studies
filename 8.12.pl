@@ -8,59 +8,32 @@ package MyQueueFromStacks;
 sub new {
     my ($class, @values) = @_;
     my $self = {
-        stack1 => \@values,
-        stack2 => [],
-        what => 's', # status of stack1 - either stack ('s') or queue ('q')
-        # stack2 is always a stack
+        stack1 => [], # enqueue here
+        stack2 => [], # dequeue from this
     };
-    # let us use just arrays for stacks here, I don't want
-    # to rewrite the stack class again
-    return bless $self => $class;
+    bless $self => $class;
+    for (@values) {
+        $self->enqueue($_);
+    }
+    return $self;
 }
 
 sub enqueue {
     my ($self, $val) = @_;
-    if ((!scalar(@{$self->{stack1}}) && !scalar(@{$self->{stack2}})) || (!scalar(@{$self->{stack2}}) && ($self->{what} eq 's'))) {
-        push(@{$self->{stack1}}, $val);
-    }
-    else {
-        push(@{$self->{stack2}}, $val);
-    }
+    push(@{$self->{stack1}}, $val);
     return $val;
 }
 
 sub dequeue {
     my $self = shift;
     my $result;
-    if (!scalar(@{$self->{stack1}}) && !scalar(@{$self->{stack2}})) {
-        return undef;
-    }
-    elsif (!scalar(@{$self->{stack2}}) && ($self->{what} eq 'q')) {
-        return pop(@{$self->{stack1}});
-    }
-    elsif (!scalar(@{$self->{stack2}}) && ($self->{what} eq 's')) {
-        my $val = pop(@{$self->{stack1}});
-        while (defined($val)) {
+    if (!scalar(@{$self->{stack2}})) {
+        while (scalar(@{$self->{stack1}})) {
+            my $val = pop(@{$self->{stack1}});
             push(@{$self->{stack2}}, $val);
-            $val = pop(@{$self->{stack1}});
-        }
-        $result = pop(@{$self->{stack2}});
-        ($self->{stack1}, $self->{stack2}) = ($self->{stack2}, $self->{stack1});
-        $self->{what} = 'q';
-    }
-    elsif ($self->{what} eq 's') { # 2 not empty stack, 1 stack - shouldn't happen
-        warn 'dafuq';
-        use Data::Dumper;
-        warn Dumper($self);
-    }
-    elsif ($self->{what} eq 'q') { # 2 not empty stack, 1 queue
-        $result = pop(@{$self->{stack1}});
-        unless (scalar(@{$self->{stack1}})) {
-            ($self->{stack1}, $self->{stack2}) = ($self->{stack2}, $self->{stack1});
-            $self->{what} = 's';
         }
     }
-    return $result;
+    return pop(@{$self->{stack2}});
 }
 
 

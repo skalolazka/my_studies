@@ -3,22 +3,28 @@
 use strict;
 use warnings;
 
+sub find_value {
+    my ($arr, $value) = @_;
+    for (my $i = 0; $i < scalar(@$arr); $i++) {
+        if ($arr->[$i] == $value) {
+            return $i
+        }
+    }
+    return undef;
+}
+
 sub from_inorder {
     my ($inorder, $someorder, $what) = @_;
     $what = 'pre' unless defined($what);
     die "don't know mode $what" if $what ne 'pre' && $what ne 'post';
     return undef if (!defined($inorder) || !scalar(@$inorder) || !defined($someorder) || !scalar(@$someorder));
     die 'Lengths of arrays are different!' unless scalar(@$inorder) == scalar(@$someorder);
-    my $len = scalar(@$inorder);
     my $value = $what eq 'pre' ? shift(@$someorder) : pop(@$someorder); # root
     my $tree = { value => $value, left => undef, right => undef };
-    for (my $i = 0; $i < $len; $i++) {
-        if ($inorder->[$i] == $value) {
-            $tree->{left} = from_inorder([@$inorder[0..$i-1]], [@$someorder[0..$i-1]], $what);
-            $tree->{right} = from_inorder([@$inorder[$i+1..$len-1]], [@$someorder[$i..$len-2]], $what);
-            last;
-        }
-    }
+    my $i = find_value($inorder, $value);
+    die "Something's wrong with input data! Value $value not found in inorder!" unless defined($i);
+    $tree->{left} = from_inorder([@$inorder[0..$i-1]], [@$someorder[0..$i-1]], $what);
+    $tree->{right} = from_inorder([@$inorder[$i+1..scalar(@$inorder)-1]], [@$someorder[$i..scalar(@$inorder)-2]], $what);
     return $tree;
 }
 

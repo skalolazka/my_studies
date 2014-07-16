@@ -8,6 +8,7 @@ sub from_inorder {
     $what = 'pre' unless defined($what);
     die "don't know mode $what" if $what ne 'pre' && $what ne 'post';
     return undef if (!defined($inorder) || !scalar(@$inorder) || !defined($someorder) || !scalar(@$someorder));
+    die 'Lengths of arrays are different!' unless scalar(@$inorder) == scalar(@$someorder);
     my $len = scalar(@$inorder);
     my $value = $what eq 'pre' ? shift(@$someorder) : pop(@$someorder); # root
     my $tree = { value => $value, left => undef, right => undef };

@@ -26,7 +26,6 @@ sub enqueue {
 
 sub dequeue {
     my $self = shift;
-    my $result;
     if (!scalar(@{$self->{stack2}})) {
         while (scalar(@{$self->{stack1}})) {
             my $val = pop(@{$self->{stack1}});

@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # rotate array by i positions
-# solution: rotate by one, rotate by one again, ...
 
 use strict;
 use warnings;
@@ -34,21 +33,21 @@ sub rotate {
     return if (!scalar(@$arr) || !$i);
     while ($start < $end && $i < $end - $start) {
         if ($i <= int(($end - $start) / 2)) {
-            $self->swap($arr, $start, $end, $i);
+            $self->swap($arr, $start, $end - $i, $start + $i);
             $end -= $i;
         }
         else {
-            my $new_i = $end - $start - $i;
-            $self->swap($arr, $start, $end, $new_i);
-            $i = $end - $start - 2 * $new_i;
-            $start = $start + $new_i;
+            $self->swap($arr, $start, $start + $i, $end - $i);
+            my $old_i = $i;
+            $i = $start - $end + 2 * $i;
+            $start = $end - $old_i;
         }
     }
 }
 
 sub swap {
-    my ($self, $arr, $start, $end, $len) = @_;
-    for (my $i = $start, my $j = $end - $len; $i < $start + $len; $i++, $j++) {
+    my ($self, $arr, $start1, $start2, $end1) = @_;
+    for (my $i = $start1, my $j = $start2; $i < $end1; $i++, $j++) {
         ($arr->[$i], $arr->[$j]) = ($arr->[$j], $arr->[$i]);
     }
 }
@@ -67,15 +66,15 @@ $module->swap($swap, 0, 0, 0);
 is_deeply($swap, [0,1,2,3,4,5,6,7,8], 'swap none');
 $module->swap($swap, 0, 9, 0);
 is_deeply($swap, [0,1,2,3,4,5,6,7,8], 'swap none again');
-$module->swap($swap, 0, 9, 1);
+$module->swap($swap, 0, 8, 1);
 is_deeply($swap, [8,1,2,3,4,5,6,7,0], 'swap one');
-$module->swap($swap, 0, 2, 1);
+$module->swap($swap, 0, 1, 1);
 is_deeply($swap, [1,8,2,3,4,5,6,7,0], 'swap one in start');
-$module->swap($swap, 3, 5, 1);
+$module->swap($swap, 3, 4, 4);
 is_deeply($swap, [1,8,2,4,3,5,6,7,0], 'swap one in middle');
-$module->swap($swap, 0, 7, 3);
+$module->swap($swap, 0, 4, 3);
 is_deeply($swap, [3,5,6,4,1,8,2,7,0], 'swap three in start');
-$module->swap($swap, 3, 9, 3);
+$module->swap($swap, 3, 6, 6);
 is_deeply($swap, [3,5,6,2,7,0,4,1,8], 'swap three in middle');
 
 my $test = [];

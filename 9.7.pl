@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use MyBinTree;
+
 sub find_value {
     my ($arr, $value) = @_;
     for (my $i = 0; $i < scalar(@$arr); $i++) {
@@ -20,11 +22,13 @@ sub from_inorder {
     return undef if (!defined($inorder) || !scalar(@$inorder) || !defined($someorder) || !scalar(@$someorder));
     die 'Lengths of arrays are different!' unless scalar(@$inorder) == scalar(@$someorder);
     my $value = $what eq 'pre' ? shift(@$someorder) : pop(@$someorder); # root
-    my $tree = { value => $value, left => undef, right => undef };
+    my $tree = MyBinTree->new($value);
     my $i = find_value($inorder, $value);
     die "Something's wrong with input data! Value $value not found in inorder!" unless defined($i);
-    $tree->{left} = from_inorder([@$inorder[0..$i-1]], [@$someorder[0..$i-1]], $what);
-    $tree->{right} = from_inorder([@$inorder[$i+1..scalar(@$inorder)-1]], [@$someorder[$i..scalar(@$inorder)-2]], $what);
+    my $left = from_inorder([@$inorder[0..$i-1]], [@$someorder[0..$i-1]], $what);
+    $tree->put_left($left) if defined($left);
+    my $right = from_inorder([@$inorder[$i+1..scalar(@$inorder)-1]], [@$someorder[$i..scalar(@$inorder)-2]], $what);
+    $tree->put_right($right) if defined($right);
     return $tree;
 }
 
@@ -37,60 +41,45 @@ is($t, undef, 'undef for undef');
 $t = from_inorder(undef, [1]);
 is($t, undef, 'undef for undef again');
 
-$compare = { value => 1, left => undef, right => undef };
-$t = from_inorder([1], [1]);
-is_deeply($t, $compare, 'just root');
-$t = from_inorder([1], [1], 'post');
-is_deeply($t, $compare, 'just root - post');
+$compare = MyBinTree->new(1);
+#$compare = { value => 1, left => undef, right => undef };
+#use Data::Dumper;
+#warn Dumper($t);
+sub check {
+    my ($t, $compare, $text) = @_;
+    $t = from_inorder(MyBinTree->inorder($compare), MyBinTree->preorder($compare));
+    is_deeply($t, $compare, $text);
+    $t = from_inorder(MyBinTree->inorder($compare), MyBinTree->postorder($compare), 'post');
+    is_deeply($t, $compare, $text.' - post');
+}
 
-$compare = { value => 2, left => { value => 1, left => undef, right => undef }, right => undef };
-$t = from_inorder([1,2], [2,1]);
-is_deeply($t, $compare, 'root + left child');
-$t = from_inorder([1,2], [1,2], 'post');
-is_deeply($t, $compare, 'root + left child - post');
+check($t, $compare, 'just root');
 
-$compare = { value => 1, right => { value => 2, left => undef, right => undef }, left => undef };
-$t = from_inorder([1,2], [1,2]);
-is_deeply($t, $compare, 'root + right child');
-$t = from_inorder([1,2], [2,1], 'post');
-is_deeply($t, $compare, 'root + right child - post');
+$compare = MyBinTree->new(2);
+$compare->put_left(1);
+check($t, $compare, 'root + left child');
 
-$compare = { value => 2, left => { value => 1, left => undef, right => undef }, right => { value => 3, left => undef, right => undef }};
-$t = from_inorder([1,2,3], [2,1,3]);
-is_deeply($t, $compare, 'root + two children');
-$t = from_inorder([1,2,3], [1,3,2], 'post');
-is_deeply($t, $compare, 'root + two children - post');
+$compare = MyBinTree->new(4);
+$compare->put_right(6);
+check($t, $compare, 'root + right child');
 
-$compare = { value => 4, left => { value => 2, left => { value => 1, left => undef, right => undef }, right => { value => 3, left => undef, right => undef } }, right => { value => 6, left => { value => 5, left => undef, right => undef }, right => undef }};
-$t = from_inorder([1,2,3,4,5,6], [4,2,1,3,6,5]);
-is_deeply($t, $compare, 'bigger tree');
-$t = from_inorder([1,2,3,4,5,6], [1,3,2,5,6,4], 'post');
-is_deeply($t, $compare, 'bigger tree - post');
+$compare->put_left(2);
+check($t, $compare, 'root + two children');
 
-$compare = { 
-    value => 6,
-    left => {
-        value => 4,
-        left => {
-            value => 2,
-            left => { value => 1, left => undef, right => undef},
-            right => { value => 3, left => undef, right => undef }
-        },
-        right => { value => 5, left => undef, right => undef }
-    },
-    right => {
-        value => 9,
-        left => {
-            value => 7,
-            left => undef,
-            right => { value => 8, left => undef, right => undef },
-        },
-        right => undef,
-    },
-};
-$t = from_inorder([1,2,3,4,5,6,7,8,9], [6,4,2,1,3,5,9,7,8]);
-is_deeply($t, $compare, 'big tree');
-$t = from_inorder([1,2,3,4,5,6,7,8,9], [1,3,2,5,4,8,7,9,6], 'post');
-is_deeply($t, $compare, 'big tree - post');
+$compare->{left}->put_left(1);
+$compare->{left}->put_right(3);
+$compare->{right}->put_left(5);
+check($t, $compare, 'bigger tree - post');
+
+$compare = MyBinTree->new(6);
+$compare->put_left(4);
+$compare->{left}->put_left(2);
+$compare->{left}{left}->put_left(1);
+$compare->{left}{left}->put_right(3);
+$compare->{left}->put_right(5);
+$compare->put_right(9);
+$compare->{right}->put_left(7);
+$compare->{right}{left}->put_right(8);
+check($t, $compare, 'big tree');
 
 done_testing;

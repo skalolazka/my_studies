@@ -28,7 +28,6 @@ sub ll_cycle{
         my $counter = 0;
         while ($slow != $fast || !$counter) {
             $slow = $slow->{next_node};
-            $fast = $fast->{next_node}{next_node};
             $counter++; # length of cycle
         }
         ($slow, $fast) = ($ll, $ll);

@@ -3,22 +3,17 @@
 # task: common elems of two sorted arrays without duplicates
 
 def common_elems(a, b):
-    if a is None or b is None:
-        return None
     i, j = 0, 0
     c = []
     prev = None
     while i < len(a) and j < len(b):
         if a[i] < b[j]:
             i += 1
-            prev = None
         elif a[i] > b[j]:
             j += 1
-            prev = None
         else: # equal
-            if prev is None or prev != a[i]:
+            if len(c) == 0 or c[-1] != a[i]:
                 c.append(a[i])
-            prev = a[i]
             i += 1
             j += 1
     return c
@@ -27,9 +22,6 @@ def common_elems(a, b):
 import unittest
 
 class MyTest(unittest.TestCase):
-    def test_none(self):
-       self.assertEqual(common_elems(None, None), None, 'None')
-
     def test_empty(self):
        self.assertEqual(common_elems([], []), [], 'empty')
        self.assertEqual(common_elems([1,2], []), [], 'one empty')

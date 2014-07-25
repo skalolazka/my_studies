@@ -48,6 +48,18 @@ sub preorder {
     return $result;
 }
 
+sub preorder_with_undef {
+    my ($class, $t, $result) = @_;
+    unless (defined($t)) {
+        push(@$result, undef);
+        return $result;
+    }
+    push(@$result, $t->{value});
+    $result = $class->preorder_with_undef($t->{left}, $result);
+    $result = $class->preorder_with_undef($t->{right}, $result);
+    return $result;
+}
+
 sub postorder {
     my ($class, $t, $result) = @_;
     return $result unless defined($t); 

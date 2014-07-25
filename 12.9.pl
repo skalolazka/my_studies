@@ -23,6 +23,7 @@ sub is_writable {
                 delete($symbols{$l});
             }
         }
+        return 1 unless scalar(keys(%symbols));
     }
     return scalar(keys(%symbols)) ? 0 : 1;
 }
@@ -37,6 +38,6 @@ is(is_writable('a', 'b'), 0, 'different letters');
 is(is_writable('avt', 'sdfew'), 0, 'many different letters');
 is(is_writable('aaaa', 'bbssaaaha'), 1, 'three same letters');
 is(is_writable('bbbaabc', 'dddfbcababbt'), 1, 'long');
-is(is_writable('a , 54 lsfddd --- lp', 'd shbcw4akdj--gvl, lddgsfd 5 - p  '), 1, 'long with spaces');
+is(is_writable('a , 54 lsfddd --- lp', 'd shbcw4akdj--gvl, lddgsfd 5 - p  sdfjhblawcwsjbc ads,bc ,b'), 1, 'long with spaces');
 
 done_testing;

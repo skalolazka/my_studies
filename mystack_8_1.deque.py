@@ -31,16 +31,10 @@ class MyStack:
             return None
 
     def to_array(self):
-        arr = []
-        for v in self.values:
-            arr.append(v)
-        return arr # I'm sure there must be a better way
+        return list(self.values)
 
     def is_empty(self):
-        if self.values:
-            return False
-        else:
-            return True
+        return not bool(self.values)
 
 import unittest
 

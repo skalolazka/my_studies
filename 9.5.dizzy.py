@@ -7,53 +7,52 @@
 from mybintree_w_parent_9_12 import MyBinTreeWithParent
 
 def next_inorder_node(node):
-    if node.left is not None:
+    if node.right is not None:
+        node = node.right
         while node.left is not None:
             node = node.left
         return node
     else:
-        return node # ?!
- 
-def go_right(t):
-    prev = None
-    if t.right is not None:
-        t = next_inorder_node(t.right)
-    else:
-        prev = t
-        t = t.parent
-    return (t, prev)
+        prev = node
+        while node is not None and prev != node.left:
+            prev = node
+            node = node.parent
+        return node
 
 def inorder_w_parent(t):
+    if t is None:
+        return []
     result = []
     prev = None
+    while t.left is not None:
+        t = t.left
     while t is not None: # will happen only when we come to root.parent, other cases are checked
-        if prev is None:
-            t = next_inorder_node(t)
-            if t == t: # no left node
-                result.append(t.value)
-                (t, prev) = go_right(t)
-        elif prev == t.left: # came from left child
-            prev = None
-            result.append(t.value)
-            (t, prev) = go_right(t)
-        else: # came from right child
-            prev = t
-            t = t.parent
+        result.append(t.value)
+        t = next_inorder_node(t)
     return result
 
 import unittest
 
 class TestInOrderWParent(unittest.TestCase):
-    def test_empty(self):
-        self.assertEqual(inorder_w_parent(None), [], 'None')
-
-    def test_many(self):
-        t = MyBinTreeWithParent(1)
-        self.assertEqual(inorder_w_parent(t), [1], 'just root')
-        t.put_left(2)
-        self.assertEqual(inorder_w_parent(t), [2, 1], 'root with left child')
-        t.put_right(3)
-        self.assertEqual(inorder_w_parent(t), [2, 1, 3], 'root with two children')
+    def setUp(self):
+        self.root = MyBinTreeWithParent(1)
+        self.left_child = MyBinTreeWithParent(1)
+        self.left_child.put_left(2)
+        self.children = MyBinTreeWithParent(1)
+        self.children.put_left(2)
+        self.children.put_right(3)
+        self.tree = MyBinTreeWithParent(1)
+        self.tree.put_left(2)
+        self.tree.put_right(3)
+        self.tree.left.put_left(4)
+        self.tree.left.put_right(5)
+        self.big_tree = MyBinTreeWithParent(1)
+        self.big_tree.put_left(2)
+        self.big_tree.put_right(3)
+        self.big_tree.left.put_left(4)
+        self.big_tree.left.put_right(5)
+        self.big_tree.right.put_right(6)
+        self.big_tree.left.left.put_right(7)
         #      1
         #     / \
         #    2   3
@@ -61,13 +60,24 @@ class TestInOrderWParent(unittest.TestCase):
         #  4   5   6
         #   \
         #    7
-        t.left.put_left(4)
-        t.left.put_right(5)
-        self.assertEqual(inorder_w_parent(t), [4, 2, 5, 1, 3], 'big tree')
-        t.right.put_right(6)
-        self.assertEqual(inorder_w_parent(t), [4, 2, 5, 1, 3, 6], 'bigger tree')
-        t.left.left.put_right(7)
-        self.assertEqual(inorder_w_parent(t), [4, 7, 2, 5, 1, 3, 6], 'even bigger tree')
+
+    def test_next_inorder_node(self):
+        self.assertEqual(next_inorder_node(self.root), None, 'root')
+        self.assertEqual(next_inorder_node(self.big_tree), self.big_tree.right, 'root of big tree')
+        self.assertEqual(next_inorder_node(self.big_tree.left.left), self.big_tree.left.left.right, 'left-left')
+        self.assertEqual(next_inorder_node(self.big_tree.left.left.right), self.big_tree.left, 'left-left-right')
+        self.assertEqual(next_inorder_node(self.big_tree.left.right), self.big_tree, 'left-right')
+        self.assertEqual(next_inorder_node(self.big_tree.right.right), None, 'right-right')
+
+    def test_empty(self):
+        self.assertEqual(inorder_w_parent(None), [], 'None')
+
+    def test_many(self):
+        self.assertEqual(inorder_w_parent(self.root), [1], 'just root')
+        self.assertEqual(inorder_w_parent(self.left_child), [2, 1], 'root with left child')
+        self.assertEqual(inorder_w_parent(self.children), [2, 1, 3], 'root with two children')
+        self.assertEqual(inorder_w_parent(self.tree), [4, 2, 5, 1, 3], 'big tree')
+        self.assertEqual(inorder_w_parent(self.big_tree), [4, 7, 2, 5, 1, 3, 6], 'even bigger tree')
 
 
 if __name__ == '__main__':

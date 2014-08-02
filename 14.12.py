@@ -10,17 +10,10 @@ def from_preorder(preorder, start=None, end=None):
     root = preorder[start]
     result = MyBST(root)
     left_part = start + 1
-    while left_part < end:
-        elem = preorder[left_part]
-        if elem > root:
-            break
+    while left_part < end and preorder[left_part] <= root:
         left_part += 1
-    left_subtree = from_preorder(preorder, start + 1, left_part)
-    if left_subtree is not None:
-        result.put_left(left_subtree)
-    right_subtree = from_preorder(preorder, left_part, end)
-    if right_subtree is not None:
-        result.put_right(right_subtree)
+    result.put_left(from_preorder(preorder, start + 1, left_part))
+    result.put_right(from_preorder(preorder, left_part, end))
     return result
 
 

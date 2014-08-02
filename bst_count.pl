@@ -6,7 +6,7 @@ sub bst_count {
     my ($level) = @_;
     return $data[$level] if ($data[$level]);
     my $count = 0;
-    for (my $i = $level - 1; $i >= 0; $i--) {
+    for (my $i = 0; $i < $level; $i++) {
         $count += bst_count($i) * bst_count($level - $i - 1);
     }
     $data[$level] = $count;

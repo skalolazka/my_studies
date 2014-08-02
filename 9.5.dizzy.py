@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 # task: in-o w.parent pointers, O(1) space
-# I can't say this one looks better! But I couldn't make the part with "go right" better - 
-# either it's copypaste in two if's, or a function, both look ugly.
 
 from mybintree_w_parent_9_12 import MyBinTreeWithParent
 
+def leftmost_child(node):
+    while node.left is not None:
+        node = node.left
+    return node
+
 def next_inorder_node(node):
     if node.right is not None:
-        node = node.right
-        while node.left is not None:
-            node = node.left
-        return node
+        return leftmost_child(node.right)
     else:
         prev = node
         while node is not None and prev != node.left:
@@ -24,8 +24,7 @@ def inorder_w_parent(t):
         return []
     result = []
     prev = None
-    while t.left is not None:
-        t = t.left
+    t = leftmost_child(t)
     while t is not None: # will happen only when we come to root.parent, other cases are checked
         result.append(t.value)
         t = next_inorder_node(t)
@@ -61,6 +60,12 @@ class TestInOrderWParent(unittest.TestCase):
         #   \
         #    7
 
+    def test_leftmost_child(self):
+        aa = leftmost_child(self.big_tree)
+        self.assertEqual(leftmost_child(self.big_tree), self.big_tree.left.left, 'leftmost child of root')
+        self.assertEqual(leftmost_child(self.big_tree.left), self.big_tree.left.left, 'leftmost child of root.left')
+        self.assertEqual(leftmost_child(self.big_tree.right), self.big_tree.right, 'leftmost child of root.right')
+
     def test_next_inorder_node(self):
         self.assertEqual(next_inorder_node(self.root), None, 'root')
         self.assertEqual(next_inorder_node(self.big_tree), self.big_tree.right, 'root of big tree')
@@ -72,6 +77,7 @@ class TestInOrderWParent(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(inorder_w_parent(None), [], 'None')
 
+    #@unittest.skip('later')
     def test_many(self):
         self.assertEqual(inorder_w_parent(self.root), [1], 'just root')
         self.assertEqual(inorder_w_parent(self.left_child), [2, 1], 'root with left child')

@@ -13,15 +13,7 @@ sub lca {
     my $left = lca($t->{left}, $n1, $n2);
     my $right = lca($t->{right}, $n1, $n2);
     if (defined($left) && defined($right)) { # found both
-        if ($left != $n1 && $left != $n2) { # found lca here
-            return $left;
-        }
-        elsif ($right != $n1 && $right != $n2) { # found lca here
-            return $right;
-        }
-        else { # found just both nodes => lca is current node
-            return $t;
-        }
+        return $t;
     }
     elsif (defined($left)) {
         return $left;

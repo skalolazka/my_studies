@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 from mystack_8_1 import *
+from mybintree_8_9 import *
 
-class MyBST:
+class MyBST(MyBinTree):
     def __init__(self, value=None):
-        self.value = value
-        self.left = None
-        self.right = None
+        MyBinTree.__init__(self, value)
 
     def put_value(self, value):
         if self.value is None:

@@ -13,13 +13,13 @@ class MyBinTree:
     def put_left(self, value):
         if isinstance(value, MyBinTree): # let's leave it this simple for now
             self.left = value
-        else:
+        elif value is not None:
             self.left = self.__class__(value) # for inheritance
 
     def put_right(self, value):
         if isinstance(value, MyBinTree): # let's leave it this simple for now
             self.right = value
-        else:
+        elif value is not None:
             self.right = self.__class__(value) # for inheritance
 
 

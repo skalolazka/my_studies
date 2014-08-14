@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import time
-
 class MyGraph:
     def __init__(self, pairs=None):
         if pairs is None:
@@ -49,8 +47,6 @@ class MyGraph:
     def has_path(self, vertex1, vertex2, seen=None):
         if seen is None:
             seen = []
-        #print 'input: v1 ', vertex1, ', v2 ', vertex2, ' seen ', seen
-        #time.sleep(1)
         for d in self.data:
             if d[0] not in seen:
                 if d[0] == vertex1:
@@ -65,7 +61,6 @@ class MyGraph:
                             if res:
                                 return 1
                             seen.append(dd)
-        #print 'returned 0'
         return 0
 
 

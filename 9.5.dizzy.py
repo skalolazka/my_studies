@@ -13,9 +13,9 @@ def next_inorder_node(node):
     if node.right is not None:
         return leftmost_child(node.right)
     else:
-        prev = node
-        while node is not None and prev != node.left:
-            prev = node
+        while node is not None and not is_left_child(node, node.parent):
+            node = node.parent
+        if node is not None:
             node = node.parent
         return node
 
@@ -93,11 +93,11 @@ class TestInOrderWParent(unittest.TestCase):
         self.assertEqual(is_left_child(None, self.big_tree), 0)
 
     def test_many(self):
-        #self.assertEqual(inorder_w_parent(self.root), [1], 'just root')
+        self.assertEqual(inorder_w_parent(self.root), [1], 'just root')
         self.assertEqual(inorder_w_parent(self.left_child), [2, 1], 'root with left child')
-        #self.assertEqual(inorder_w_parent(self.children), [2, 1, 3], 'root with two children')
-        #self.assertEqual(inorder_w_parent(self.tree), [4, 2, 5, 1, 3], 'big tree')
-        #self.assertEqual(inorder_w_parent(self.big_tree), [4, 7, 2, 5, 1, 3, 6], 'even bigger tree')
+        self.assertEqual(inorder_w_parent(self.children), [2, 1, 3], 'root with two children')
+        self.assertEqual(inorder_w_parent(self.tree), [4, 2, 5, 1, 3], 'big tree')
+        self.assertEqual(inorder_w_parent(self.big_tree), [4, 7, 2, 5, 1, 3, 6], 'even bigger tree')
 
 
 if __name__ == '__main__':

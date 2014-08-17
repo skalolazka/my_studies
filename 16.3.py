@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # task: pins and wire, can we divide pins into left & right, wires only from left to right
+# Time complexity. This is the standard task of colouring the vertices of the graph. So I'm using BFS for it. Means it is O(E).
 
 from mygraph import MyGraph
 

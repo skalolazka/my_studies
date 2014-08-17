@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-# task: pins and wire, can we divide pins into left & right, wires only from left to right
+# task: timetable of flights, what's the shortest time to get to a given city from the given city at the given starting time
+# Time complexity. It's a graph where cities are vertexes, each edge is a connecting flight, but they edges also have data
+# (starting time and ending time - like edge weight, but in the algorithm we also have to remember a flight can start only
+# after the specified time). So I guess I'm just using DFS, finding all paths and comparing the times ("costs") I've got. O(E)?
+# A thought: it's better to start with flights that are shorter (Dijkstra's?). Maybe I should refactor. Leaving it at it for now.
 
 from mygraph import MyGraph
 

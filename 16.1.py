@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # task: maze, find path. 0 - empty, 1 - filled
+# Time complexity: think of a maze as a graph where each empty square (0 in my implementation) is a vertex,
+# and two vertexes have an edge if they share a side. So I'm using DFS here. Means that it's O(E).
 
 def maze_path(maze, start=None, end=None, seen=None):
     # I believe input is a proper matrix

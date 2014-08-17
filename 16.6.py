@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 # task: can all equations be satisfied simultaneously
+# Time complexity. I build two graphs out of the equations: let the variables be vertices and one graph is for the equalities
+# (draw an edge between two variables when you see an equasion with them) and the other is for the inequalities accordingly.
+# I use the mygraph library I have written, the function 'has_path' there is a DFS, so it's O(E).
 
 from mygraph import MyGraph
 

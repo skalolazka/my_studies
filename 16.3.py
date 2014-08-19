@@ -33,39 +33,39 @@ def paint(g, painted, start_vertex=None):
                 new = 0
                 for dd in d[1]:
                     if dd in painted[opposite]:
-                        return (0, painted)
+                        return (False, painted)
                     if dd not in painted[color]:
                         new = 1
                         painted[color].append(dd)
                 if new != 0: # have at least something to paint here
                     for dd in d[1]:
-                        res = paint(g, painted)
+                        (res, painted) = paint(g, painted)
                         if res == 0:
                             return (res, painted)
     for d in g.data: # check if there are not painted vertices yet
     # means the graph has more than one connected component
         if d[0] not in painted['white'] and d[0] not in painted['black']:
             paint(g, painted, d)
-    return (1, painted)
+    return (True, painted)
 
 
 import unittest
 
 class TestPins(unittest.TestCase):
     def test_small(self):
-        self.assertEqual(pins([[1,2],[1,3]]), 1, 'ok')
-        self.assertEqual(pins([[1,2],[2,3]]), 1, 'ok')
-        self.assertEqual(pins([[1,2],[2,3],[1,3]]), 0, 'not ok')
+        self.assertTrue(pins([[1,2],[1,3]]), 'ok')
+        self.assertTrue(pins([[1,2],[2,3]]), 'ok again')
+        self.assertFalse(pins([[1,2],[2,3],[1,3]]), 'not ok')
 
     def test_big(self):
-        self.assertEqual(pins([[1,2],[1,4],[1,8],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[7,2]]), 1, 'big ok')
+        self.assertTrue(pins([[1,2],[1,4],[1,8],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[7,2]]), 'big ok')
 
     def test_big_no(self):
-        self.assertEqual(pins([[1,2],[1,4],[1,8],[4,5],[5,7],[7,8],[7,2]]), 0, 'big ok')
+        self.assertFalse(pins([[1,2],[1,4],[1,8],[4,5],[5,7],[7,8],[7,2]]), 'big not ok')
 
     def test_two_components(self):
-        self.assertEqual(pins([[1,2],[2,3],[3,4],[1,3],[5,6],[6,7],[5,7]]), 0, 'two components not ok')
-        self.assertEqual(pins([[1,2],[2,3],[3,4],[1,4],[5,6],[6,7],[7,8],[8,9],[5,8]]), 1, 'two components ok')
+        self.assertFalse(pins([[1,2],[2,3],[3,4],[1,3],[5,6],[6,7],[5,7]]), 'two components not ok')
+        self.assertTrue(pins([[1,2],[2,3],[3,4],[1,4],[5,6],[6,7],[7,8],[8,9],[5,8]]), 'two components ok')
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestPins)

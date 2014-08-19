@@ -13,9 +13,9 @@ def maze_path(maze, start=None, end=None, seen=None):
     if seen is None:
         seen = [start]
     if maze[start[0]][start[1]] == 1 or maze[end[0]][end[1]] == 1:
-        return (0, seen)
+        return (False, seen)
     if start == end:
-        return (1, seen)
+        return (True, seen)
     adjacent = []
     if start[0] > 0 and maze[start[0]-1][start[1]] == 0 and [start[0]-1, start[1]] not in seen:
         adjacent.append([start[0]-1, start[1]])
@@ -30,36 +30,36 @@ def maze_path(maze, start=None, end=None, seen=None):
         (result, seen) = maze_path(maze, a, end, seen)
         if result:
             return (result, seen)
-    return (0, seen)
+    return (False, seen)
 
 import unittest
 
 class TestMaze(unittest.TestCase):
     def test_small(self):
-        self.assertEqual(maze_path([[1]])[0], 0, 'very small, no')
-        self.assertEqual(maze_path([[1,1],[1,1]])[0], 0, 'small, no')
-        self.assertEqual(maze_path([[1,1,1],[1,1,1]])[0], 0, 'bit bigger, no')
-        self.assertEqual(maze_path([[0,0,0],[0,0,0]])[0], 1, 'bit bigger, yes')
+        self.assertFalse(maze_path([[1]])[0], 'very small, no')
+        self.assertFalse(maze_path([[1,1],[1,1]])[0], 'small, no')
+        self.assertFalse(maze_path([[1,1,1],[1,1,1]])[0], 'bit bigger, no')
+        self.assertTrue(maze_path([[0,0,0],[0,0,0]])[0], 'bit bigger, yes')
 
     def test_bigger(self):
-        self.assertEqual(maze_path([[0,1,1],[0,0,0],[1,1,0]])[0], 1, 'got path')
-        self.assertEqual(maze_path([[0,1,1],[0,1,0],[1,1,0]])[0], 0, 'no path')
+        self.assertTrue(maze_path([[0,1,1],[0,0,0],[1,1,0]])[0], 'got path')
+        self.assertFalse(maze_path([[0,1,1],[0,1,0],[1,1,0]])[0], 'no path')
 
     def test_big(self):
-        self.assertEqual(maze_path([
+        self.assertTrue(maze_path([
             [0,1,1,0,0,0,1],
             [0,0,1,0,1,0,0],
             [1,0,0,0,1,1,0],
             [0,0,1,0,0,1,0]
-        ])[0], 1, 'got path')
+        ])[0], 'got path')
 
     def test_big_none(self):
-        self.assertEqual(maze_path([
+        self.assertFalse(maze_path([
             [0,1,0,0,0,0,1],
             [0,0,1,0,1,0,0],
             [1,0,0,1,1,1,0],
             [0,0,1,0,0,1,0]
-        ])[0], 0, 'no path')
+        ])[0], 'no path')
 
 
 if __name__ == '__main__':

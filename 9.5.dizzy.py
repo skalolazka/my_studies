@@ -13,14 +13,14 @@ def next_inorder_node(node):
     if node.right is not None:
         return leftmost_child(node.right)
     else:
-        while node is not None and not is_left_child(node, node.parent):
+        while node is not None and node.parent is not None and not is_left_child(node):
             node = node.parent
         if node is not None:
             node = node.parent
         return node
 
-def is_left_child(child_node, node):
-    if node is not None and child_node is not None and node.left == child_node:
+def is_left_child(node):
+    if node.parent.left == node:
         return 1
     else:
         return 0
@@ -83,14 +83,10 @@ class TestInOrderWParent(unittest.TestCase):
         self.assertEqual(inorder_w_parent(None), [], 'None')
 
     def test_is_left_child(self):
-        self.assertEqual(is_left_child(self.big_tree.left, self.big_tree), 1)
-        self.assertEqual(is_left_child(self.big_tree.left.left, self.big_tree.left), 1)
-        self.assertEqual(is_left_child(self.big_tree.left.left, self.big_tree), 0)
-        self.assertEqual(is_left_child(self.big_tree, self.big_tree), 0)
-        self.assertEqual(is_left_child(self.big_tree.right, self.big_tree), 0)
-        self.assertEqual(is_left_child(self.big_tree, self.big_tree.left), 0)
-        self.assertEqual(is_left_child(self.big_tree.left, None), 0)
-        self.assertEqual(is_left_child(None, self.big_tree), 0)
+        self.assertEqual(is_left_child(self.big_tree.left), 1)
+        self.assertEqual(is_left_child(self.big_tree.left.left), 1)
+        self.assertEqual(is_left_child(self.big_tree.right), 0)
+        self.assertEqual(is_left_child(self.big_tree.left.right), 0)
 
     def test_many(self):
         self.assertEqual(inorder_w_parent(self.root), [1], 'just root')

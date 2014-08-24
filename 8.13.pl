@@ -8,11 +8,9 @@ use warnings;
 
 package MyQueue;
 
-my $size = 9; # leave it=)
-
 sub new {
     my ($class, @values) = @_;
-    my $self = { values => [map {undef} (0..$size)], start => undef, end => 0, max => [] };
+    my $self = { values => [], max => [] };
     bless $self => $class;
     for my $value (@values) { # this is not the main concern here, so even though I know it's not optimal, let me leave it as it is here
 # could have just left an implementation with no values accepted in new()
@@ -21,42 +19,27 @@ sub new {
     return $self;
 }
 
-sub resize { # again, this is not the main concern here
-    my $self = shift;
-    $self->{values} = [@{$self->{values}}, map {undef} (0..scalar(@{$self->{values}})-1)];
-}
-
 sub enqueue {
     my ($self, $value) = @_;
-    $self->{start} = 0 unless defined($self->{start});
-    if ($self->{end} == scalar(@{$self->{values}})) {
-        $self->resize();
-    }
-    $self->{values}[$self->{end}] = $value;
-    if (!defined($self->max) || $value >= $self->max) {
+    push(@{$self->{values}}, $value);
+    if (!defined($self->max)) {
         $self->{max} = [$value];
     }
-    else {
-        push(@{$self->{max}}, $value);
-    }
-    $self->{end}++;
+    my $i;
+    for ($i = scalar(@{$self->{max}})-1; $i >= 0 && $value >= $self->{max}[$i]; $i--) { pop(@{$self->{max}}) }
+    $self->{max}[$i+1] = $value;
 }
 
 sub lookup {
     my $self = shift;
-    if (!defined($self->{start}) || $self->{start} == $self->{end}) {
-        return undef;
-    }
-    else {
-        return $self->{values}[$self->{start}];
-    }
+    return undef unless scalar(@{$self->{values}});
+    return $self->{values}[0];
 }
 
 sub dequeue {
     my $self = shift;
-    my $elem = $self->lookup;
-    return undef unless defined($elem);
-    $self->{start}++;
+    return undef unless scalar(@{$self->{values}});
+    my $elem = shift(@{$self->{values}});
     my $next = $self->lookup;
     if ($elem == $self->max && (!defined($next) || $next < $self->max)) {
         shift(@{$self->{max}});
@@ -78,14 +61,14 @@ use Data::Dumper;
 my $q = MyQueue->new(4);
 is_deeply($q->{max}, [4], 'max set');
 is($q->max, 4, 'max ok');
-$q->enqueue(2);
+$q->enqueue(2); # 4,2
 is_deeply($q->{max}, [4,2], 'max added');
 is($q->max, 4, 'max ok');
-$q->enqueue(1);
+$q->enqueue(1); # 4,2,1
 is_deeply($q->{max}, [4,2,1], 'max added again');
 is($q->max, 4, 'max ok');
-$q->enqueue(3);
-is_deeply($q->{max}, [4,2,1,3], 'max added even more');
+$q->enqueue(3); # 4,2,1,3
+is_deeply($q->{max}, [4,3], 'max modified now');
 is($q->max, 4, 'max ok');
 $q->enqueue(5);
 is_deeply($q->{max}, [5], 'max cut down');
@@ -103,5 +86,12 @@ $q->dequeue();
 is($q->max, undef, 'no items left');
 $q->enqueue(10);
 is($q->max, 10, 'max started');
+$q = MyQueue->new(3,1,2);
+$q->dequeue();
+is($q->max, 2);
+$q = MyQueue->new(4,3,1,2,0);
+$q->dequeue();
+$q->dequeue();
+is($q->max, 2);
 
 done_testing;

@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 
 # task: queue with max, any series of enqueue + dequeue + max = O(n)
-# works only if there are no duplicates in the queue!!!
+# OK, I got it about the algorithm of the 'max' storage. While the numbers only lower, keep track, once there's a bigger one -
+# delete all the ones smaller it and put it in the end.
 
 use strict;
 use warnings;

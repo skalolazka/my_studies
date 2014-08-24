@@ -10,20 +10,25 @@ def leftmost_child(node):
     return node
 
 def next_inorder_node(node):
+    """
+    Precond: `node` is not None (`node` is a valid tree node).
+    """
     if node.right is not None:
         return leftmost_child(node.right)
     else:
-        while node is not None and node.parent is not None and not is_left_child(node):
+        while not is_left_child(node):
             node = node.parent
-        if node is not None:
-            node = node.parent
-        return node
+        return node.parent
 
 def is_left_child(node):
-    if node.parent.left == node:
-        return 1
-    else:
-        return 0
+    """
+    Precond: `node` is not None (`node` is a valid tree node).
+    Postcond: node.parent is a valid MyNode or a None
+    Postcond: if it returns False then node.parent is not None
+    """
+    if node.parent is None:
+        return True
+    return node.parent.left == node
 
 def inorder_w_parent(t):
     if t is None:

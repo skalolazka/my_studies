@@ -26,7 +26,7 @@ class MyGraph:
         return vertex2 in self.data.get(vertex1, [])
 
     def adj_vertices(self, vertex):
-        return self.data.get(vertex)
+        return self.data.get(vertex) or []
 
     def has_path(self, vertex1, vertex2):
         seen = set()

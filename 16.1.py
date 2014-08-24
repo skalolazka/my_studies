@@ -4,6 +4,18 @@
 # Time complexity: think of a maze as a graph where each empty square (0 in my implementation) is a vertex,
 # and two vertexes have an edge if they share a side. So I'm using DFS here. Means that it's O(E).
 
+def adj_squares(maze, start):
+    adjacent = []
+    if start[0] > 0 and maze[start[0]-1][start[1]] == 0:
+        adjacent.append([start[0]-1, start[1]])
+    if start[0] < len(maze)-1 and maze[start[0]+1][start[1]] == 0:
+        adjacent.append([start[0]+1, start[1]])
+    if start[1] > 0 and maze[start[0]][start[1]-1] == 0:
+        adjacent.append([start[0], start[1]-1])
+    if start[1] < len(maze[0])-1 and maze[start[0]][start[1]+1] == 0:
+        adjacent.append([start[0], start[1]+1])
+    return adjacent
+
 def maze_path(maze, start=None, end=None, seen=None):
     # I believe input is a proper matrix
     if start is None:
@@ -11,25 +23,18 @@ def maze_path(maze, start=None, end=None, seen=None):
     if end is None:
         end = [len(maze)-1, len(maze[-1])-1]
     if seen is None:
-        seen = [start]
+        seen = []
     if maze[start[0]][start[1]] == 1 or maze[end[0]][end[1]] == 1:
         return (False, seen)
     if start == end:
         return (True, seen)
-    adjacent = []
-    if start[0] > 0 and maze[start[0]-1][start[1]] == 0 and [start[0]-1, start[1]] not in seen:
-        adjacent.append([start[0]-1, start[1]])
-    if start[0] < len(maze)-1 and maze[start[0]+1][start[1]] == 0 and [start[0]+1, start[1]] not in seen:
-        adjacent.append([start[0]+1, start[1]])
-    if start[1] > 0 and maze[start[0]][start[1]-1] == 0 and [start[0], start[1]-1] not in seen:
-        adjacent.append([start[0], start[1]-1])
-    if start[1] < len(maze[0])-1 and maze[start[0]][start[1]+1] == 0 and [start[0], start[1]+1] not in seen:
-        adjacent.append([start[0], start[1]+1])
+    adjacent = adj_squares(maze, start)
     for a in adjacent:
-        seen.append(a)
-        (result, seen) = maze_path(maze, a, end, seen)
-        if result:
-            return (result, seen)
+        if a not in seen:
+            seen.append(a)
+            (result, seen) = maze_path(maze, a, end, seen)
+            if result:
+                return (result, seen)
     return (False, seen)
 
 import unittest

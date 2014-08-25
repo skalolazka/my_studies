@@ -21,7 +21,7 @@ def satisfy(pairs_eq, pairs_ne):
         arr_ne.append([p[0], p[1]])
     check = arr_eq if len(arr_eq) < len(arr_ne) else arr_ne
     for p in check:
-        if equal.has_path(p[0], p[1]) and not_eq.has_path(p[0], p[1]):
+        if equal.has_path(p[0], p[1]) and not_eq.has_edge(p[0], p[1]):
             return False
     return True
 
@@ -53,7 +53,7 @@ class TestSatisfy(unittest.TestCase):
         self.assertFalse(satisfy([[1,2], [2,3]], [[1,3]]), 'not ok')
 
     def test_dizzy(self):
-        self.assertFalse(satisfy([[1,2]], [[1,3],[2,3]]), 'not ok')
+        self.assertTrue(satisfy([[1,2]], [[1,3],[2,3]]), 'ok')
 
 
 if __name__ == '__main__':
